@@ -2,7 +2,7 @@
 <script src=lib2k.js></script>
 <script src=SHAPE.js></script>
 
-<body bgcolor=black text=white>
+<body bgcolor=green text=white>
 <center>
 <canvas id='canvas1' width=600 height=600></canvas>
 </center>
@@ -23,6 +23,9 @@ void main() {\n\
    vPos = pos.xyz;\n\
    vNor = nor.xyz;\n\
    vUV  = aUV;\n\
+  /* vec3 c = mix(vec3(0.,.1,1.), vec3(.1,.2,.8), .5 + .5 * y);\n\
+   c *= vec3(1.,0.5,0.5);\n\
+   c *= vec3(1.,0.5,0.5);*/\n\
 }\n\
 ';
 
@@ -51,8 +54,7 @@ void main() {\n\
    c *= texture.rgb;\n\
    gl_FragColor = vec4(sqrt(c), 1.);\n\
 }\n\
-';
-  //Default Values
+';   //Default Values
    var widthBody = .2;
    var heightBody = .1;
    //document.getElementById('canvas1').addEventListener("keydown", stretchBody);
@@ -82,6 +84,7 @@ void main() {\n\
          widthHead -= .01;
          widthCtr+=1;
          armWidth -= .01;
+         legWidth -= .02;
          console.log(widthBody);
       }
       if(e.keyCode == 39 && widthBody <= .5){    //Right Arrow : Grow fatter lol it me
@@ -89,6 +92,7 @@ void main() {\n\
          widthHead += .01;
          widthCtr-=1;
          armWidth += .01;
+         legWidth += .02;
          console.log(widthBody);
       }
    }
@@ -102,6 +106,9 @@ void main() {\n\
    var checkered = new Material(vs, fs2);
    checkered.setTexture('imgs/checkered.jpg');
 
+   var jeans = new Material(vs, fs2);
+   jeans.setTexture('imgs/jeans03.jpg');
+
    var scene = new Scene();
 
    //initialize body parts
@@ -114,7 +121,6 @@ void main() {\n\
    head.setVertices(SHAPE.cylinder(4));
    head.setMaterial(material2);
    scene.addObject(head);
-
 
    //torso   
    var body;
@@ -132,12 +138,12 @@ void main() {\n\
    var rightArm = new SceneObject();
    var rightLeg = new SceneObject();
    var armWidth = widthBody/10;
-   var armHeight = heightBody/1.2;
+   var armHeight = heightBody/1.4;
    var legWidth = 0.05;
    var lArmMaterial = bodyMaterial;    //arms should have same material as body
    var rArmMaterial = bodyMaterial;
-   var lLegMaterial = material1;
-   var rLegMaterial = material1;
+   var lLegMaterial = jeans;
+   var rLegMaterial = jeans;
 
    leftArm.setVertices(SHAPE.cylinder(15));
    rightArm.setVertices(SHAPE.cylinder(15));
@@ -149,8 +155,8 @@ void main() {\n\
    rightLeg.setMaterial(rLegMaterial);
    scene.addObject(leftArm);
    scene.addObject(rightArm);
-   // scene.addObject(leftLeg);
-   // scene.addObject(rightLeg);
+   scene.addObject(leftLeg);
+   scene.addObject(rightLeg);
 
    //scene
    canvas1.scene = scene;
@@ -164,7 +170,6 @@ void main() {\n\
       M.rotateY(m, time);
     //   M.rotateY(m, .75*Math.PI);
 
-     
    //head
       M.save(m);
          M.scale(m, widthHead, heightHead, widthHead);
@@ -205,21 +210,21 @@ void main() {\n\
          rightArm.setMatrix(m);
       M.restore(m);
 
-      // M.save(m);
-      //    M.scale(m, armWidth, armHeight, .1);
-      //    M.translate(m, [-8+widthBody+armWidth, heightBody, 0]);
-      //    M.rotateX(m, Math.PI/2);
-      //    leftLeg.setMatrix(m);
-      // M.restore(m);
+      M.save(m);
+         M.scale(m, legWidth, armHeight, legWidth);
+         M.translate(m, [-1.5+widthBody-legWidth, -2.2, 0]);
+         M.rotateX(m, Math.PI/2);
+         leftLeg.setMatrix(m);
+      M.restore(m);
 
-      // M.save(m);
-      //    M.scale(m, armWidth, armHeight, .1);
-      //    M.translate(m, [-8+widthBody+armWidth, heightBody, 0]);
-      //    M.rotateX(m, Math.PI/2);
-      //    rightLeg.setMatrix(m);
-      // M.restore(m);
+      M.save(m);
+         M.scale(m, legWidth, armHeight, legWidth);
+         M.translate(m, [1.5-widthBody+legWidth, -2.2, 0]);
+         M.rotateX(m, Math.PI/2);
+         rightLeg.setMatrix(m);
+      M.restore(m);
+
    }
 );
 
 </script>
-
