@@ -52,7 +52,7 @@ void main() {\n\
    gl_FragColor = vec4(sqrt(c), 1.);\n\
 }\n\
 ';
-    //Default Values
+  //Default Values
    var widthBody = .2;
    var heightBody = .1;
    //document.getElementById('canvas1').addEventListener("keydown", stretchBody);
@@ -69,50 +69,50 @@ void main() {\n\
          heightBody += .1;
          heightHead+=.0005;
          heightCtr+=1;
-
+         armHeight += .04;
       }
       if(e.keyCode == 40 && heightBody >= .2){   //Down Arrow : Shorter
          heightBody -= .1;
          heightHead -=.0005;
          heightCtr-=1;
+         armHeight -= .04;
       }
       if(e.keyCode == 37 && widthBody >= .2){    //Left Arrow : Skinny Down
          widthBody -= .1;
          widthHead -= .01;
          widthCtr+=1;
+         armWidth -= .01;
          console.log(widthBody);
       }
       if(e.keyCode == 39 && widthBody <= .5){    //Right Arrow : Grow fatter lol it me
          widthBody += .1;
          widthHead += .01;
          widthCtr-=1;
+         armWidth += .01;
          console.log(widthBody);
       }
-       armWidth=widthBody/10;
-       armHeight=heightBody/1.5;
    }
 
-   //materials and scene
+   //materials and scene   
    var material1 = new Material(vs, fs1);
    material1.setTexture('imgs/polkadots.jpg');
    var material2 = new Material(vs, fs2);
    material2.setTexture('imgs/brick.png');
 
+   var checkered = new Material(vs, fs2);
+   checkered.setTexture('imgs/checkered.jpg');
+
    var scene = new Scene();
 
    //initialize body parts
-   //BSU PUT HEAD HERE
    var head;
    var head2;
    var head3;
    var headMaterial;
 
    head = new SceneObject();
-//  head2 = new SceneObject();
- //  head3 = new SceneObject();
    head.setVertices(SHAPE.cylinder(4));
    head.setMaterial(material2);
-   
    scene.addObject(head);
 
 
@@ -120,7 +120,7 @@ void main() {\n\
    var body;
    var bodyMaterial;
    body = new SceneObject();
-   bodyMaterial=material2;
+   bodyMaterial=checkered;
 
    body.setVertices(SHAPE.cylinder(4)); //Gives a rectangular body
    body.setMaterial(bodyMaterial);
@@ -132,7 +132,7 @@ void main() {\n\
    var rightArm = new SceneObject();
    var rightLeg = new SceneObject();
    var armWidth = widthBody/10;
-   var armHeight = heightBody/1.5;
+   var armHeight = heightBody/1.2;
    var legWidth = 0.05;
    var lArmMaterial = bodyMaterial;    //arms should have same material as body
    var rArmMaterial = bodyMaterial;
@@ -147,8 +147,8 @@ void main() {\n\
    rightArm.setMaterial(rArmMaterial);
    leftLeg.setMaterial(lLegMaterial);
    rightLeg.setMaterial(rLegMaterial);
- //  scene.addObject(leftArm);
-  // scene.addObject(rightArm);
+   scene.addObject(leftArm);
+   scene.addObject(rightArm);
    // scene.addObject(leftLeg);
    // scene.addObject(rightLeg);
 
@@ -164,9 +164,10 @@ void main() {\n\
       M.rotateY(m, time);
     //   M.rotateY(m, .75*Math.PI);
 
-      //BSU PUT HEAD HERE
+     
+   //head
       M.save(m);
-         M.scale(m, widthHead, heightHead, .4);
+         M.scale(m, widthHead, heightHead, widthHead);
          M.rotateX(m, .5*Math.PI);
          M.rotateZ(m, .75*Math.PI);
      //    M.translate(m, [0.,0,0]);
@@ -177,54 +178,48 @@ void main() {\n\
          head.setMatrix(m);
       M.restore(m);
 
-
-
-
       //torso
       M.save(m);
-         M.scale(m, widthBody, heightBody, .4);
+         M.scale(m, widthBody, heightBody, widthBody);
+      //   M.rotateY(m,10);
          M.rotateX(m, .5*Math.PI);
          M.rotateZ(m, .75*Math.PI);
+      //   M.rotateY(m, .5*Math.PI);
          body.setMatrix(m);
       M.restore(m);
 
+
+
       //limbs
       M.save(m);
-         M.scale(m, armWidth, armWidth, armHeight);
-         M.translate(m, [-8+widthBody+armWidth, 2, 0]);
-         M.rotateX(m, 90);
-         //M.rotateZ(m, 80);
-         // M.rotateY(m, 90);
+         M.scale(m, armWidth, armHeight, armWidth);
+         M.translate(m, [-8+widthBody+armWidth, heightBody+armHeight+.1, 0]);
+         M.rotateX(m, Math.PI/2);
          leftArm.setMatrix(m);
       M.restore(m);
 
       M.save(m);
-         M.scale(m, armWidth, armHeight, .1);
-         M.translate(m, [8+widthBody+armWidth, 2, 0]);
-         M.rotateX(m, 60);
-         // M.rotateZ(m, 80);
-         // M.rotateY(m, 90);
+         M.scale(m, armWidth, armHeight, armWidth);
+         M.translate(m, [8-widthBody-armWidth, heightBody+armHeight+.1, 0]);
+         M.rotateX(m, Math.PI/2);
          rightArm.setMatrix(m);
       M.restore(m);
 
       // M.save(m);
       //    M.scale(m, armWidth, armHeight, .1);
       //    M.translate(m, [-8+widthBody+armWidth, heightBody, 0]);
-      //    M.rotateX(m, 60);
-      //    M.rotateZ(m, 80);
-      //    // M.rotateY(m, 90);
+      //    M.rotateX(m, Math.PI/2);
       //    leftLeg.setMatrix(m);
       // M.restore(m);
 
       // M.save(m);
       //    M.scale(m, armWidth, armHeight, .1);
       //    M.translate(m, [-8+widthBody+armWidth, heightBody, 0]);
-      //    M.rotateX(m, 60);
-      //    M.rotateZ(m, 80);
-      //    // M.rotateY(m, 90);
+      //    M.rotateX(m, Math.PI/2);
       //    rightLeg.setMatrix(m);
       // M.restore(m);
    }
 );
 
 </script>
+
