@@ -1,10 +1,29 @@
+
 <script src=M.js></script>
 <script src=lib2k.js></script>
 <script src=SHAPE.js></script>
+<script src=drawlib2.js></script>
 
-<body bgcolor=green text=white>
+<style>
+   body{
+      background-image: url('imgs/pastel.jpg');
+   }
+   div{
+      background-color: black;
+   }
+</style>
+
+<body text=white>
 <center>
 <canvas id='canvas1' width=600 height=600></canvas>
+   <div style='border: 1px solid white;'>
+   <h2> Instructions </h2>
+   <p align=left> Press Left Arrow to make character thinner. &nbsp;&nbsp;&nbsp;&nbsp;
+                  Press 1 , 2 or 3 to switch between clothes. <br>
+                  Press Right Arrow to make character wider.  <br>
+                  Press Up Arrow to make character taller. <br>
+                  Press Down Array to make character smaller. </p>
+   </div>
 </center>
 </body>
    
@@ -23,9 +42,6 @@ void main() {\n\
    vPos = pos.xyz;\n\
    vNor = nor.xyz;\n\
    vUV  = aUV;\n\
-  /* vec3 c = mix(vec3(0.,.1,1.), vec3(.1,.2,.8), .5 + .5 * y);\n\
-   c *= vec3(1.,0.5,0.5);\n\
-   c *= vec3(1.,0.5,0.5);*/\n\
 }\n\
 ';
 
@@ -54,10 +70,11 @@ void main() {\n\
    c *= texture.rgb;\n\
    gl_FragColor = vec4(sqrt(c), 1.);\n\
 }\n\
-';   //Default Values
+';
+
+   //Default Values
    var widthBody = .2;
    var heightBody = .1;
-   //document.getElementById('canvas1').addEventListener("keydown", stretchBody);
 
    var widthHead = 0.12;
    var heightHead = 0.05;
@@ -84,7 +101,6 @@ void main() {\n\
          widthHead -= .01;
          widthCtr+=1;
          armWidth -= .01;
-         legWidth -= .02;
          console.log(widthBody);
       }
       if(e.keyCode == 39 && widthBody <= .5){    //Right Arrow : Grow fatter lol it me
@@ -92,9 +108,20 @@ void main() {\n\
          widthHead += .01;
          widthCtr-=1;
          armWidth += .01;
-         legWidth += .02;
          console.log(widthBody);
       }
+      if(e.keyCode == 49){
+         bodyMaterial = checkered;
+      }
+      if(e.keyCode == 50){
+         bodyMaterial = wool;
+      }
+      if(e.keyCode == 51){
+         bodyMaterial = plaid;
+      }
+      body.setMaterial(bodyMaterial);
+      leftArm.setMaterial(bodyMaterial);
+      rightArm.setMaterial(bodyMaterial);
    }
 
    //materials and scene   
@@ -103,11 +130,19 @@ void main() {\n\
    var material2 = new Material(vs, fs2);
    material2.setTexture('imgs/brick.png');
 
+   var jeans = new Material(vs, fs2);
+   jeans.setTexture('imgs/jeans.jpg');
+
+   //Shirts
    var checkered = new Material(vs, fs2);
    checkered.setTexture('imgs/checkered.jpg');
+   var wool = new Material(vs, fs2);
+   wool.setTexture('imgs/knitted.jpg');
+   var plaid = new Material(vs, fs2);
+   plaid.setTexture('imgs/plaid.jpg');
 
-   var jeans = new Material(vs, fs2);
-   jeans.setTexture('imgs/jeans03.jpg');
+   var skin = new Material(vs, fs2);
+   skin.setTexture('imgs/head.jpg');
 
    var scene = new Scene();
 
@@ -116,17 +151,27 @@ void main() {\n\
    var head2;
    var head3;
    var headMaterial;
-
+/*
+   //cube head
    head = new SceneObject();
    head.setVertices(SHAPE.cylinder(4));
-   head.setMaterial(material2);
+   head.setMaterial(skin);
    scene.addObject(head);
+*/
+
+   //sphere head
+   head2 = new SceneObject();
+   head2.setVertices(SHAPE.sphere(5));
+   head2.setMaterial(plaid);
+   scene.addObject(head2);
+
 
    //torso   
-   var body;
+   var body, legs;
    var bodyMaterial;
    body = new SceneObject();
    bodyMaterial=checkered;
+   legs = jeans;
 
    body.setVertices(SHAPE.cylinder(4)); //Gives a rectangular body
    body.setMaterial(bodyMaterial);
@@ -142,8 +187,8 @@ void main() {\n\
    var legWidth = 0.05;
    var lArmMaterial = bodyMaterial;    //arms should have same material as body
    var rArmMaterial = bodyMaterial;
-   var lLegMaterial = jeans;
-   var rLegMaterial = jeans;
+   var lLegMaterial = legs;
+   var rLegMaterial = legs;
 
    leftArm.setVertices(SHAPE.cylinder(15));
    rightArm.setVertices(SHAPE.cylinder(15));
@@ -153,6 +198,7 @@ void main() {\n\
    rightArm.setMaterial(rArmMaterial);
    leftLeg.setMaterial(lLegMaterial);
    rightLeg.setMaterial(rLegMaterial);
+   
    scene.addObject(leftArm);
    scene.addObject(rightArm);
    scene.addObject(leftLeg);
@@ -166,34 +212,25 @@ void main() {\n\
    gl_start(canvas1,function(time) {
       document.addEventListener('keydown', stretchBody);
       M.identity(m);
-
       M.rotateY(m, time);
-    //   M.rotateY(m, .75*Math.PI);
 
    //head
       M.save(m);
          M.scale(m, widthHead, heightHead, widthHead);
          M.rotateX(m, .5*Math.PI);
          M.rotateZ(m, .75*Math.PI);
-     //    M.translate(m, [0.,0,0]);
          M.translate(m, [0,0,-2.7]);
-         //M.translate(m, [.2*heightCtr,0,0]);
          M.translate(m, [0,0,-1.9*heightCtr]);
-         //M.rotateZ(m,.05*heightCtr) //attempting to rotate the head so it remains like perpindicular kinda
-         head.setMatrix(m);
+         head2.setMatrix(m);
       M.restore(m);
 
       //torso
       M.save(m);
          M.scale(m, widthBody, heightBody, widthBody);
-      //   M.rotateY(m,10);
          M.rotateX(m, .5*Math.PI);
          M.rotateZ(m, .75*Math.PI);
-      //   M.rotateY(m, .5*Math.PI);
          body.setMatrix(m);
       M.restore(m);
-
-
 
       //limbs
       M.save(m);
@@ -223,7 +260,6 @@ void main() {\n\
          M.rotateX(m, Math.PI/2);
          rightLeg.setMatrix(m);
       M.restore(m);
-
    }
 );
 
