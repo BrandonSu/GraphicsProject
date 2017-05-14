@@ -19,10 +19,10 @@
    <div style='border: 1px solid white;'>
    <h2> Instructions </h2>
    <p align=left> Press Left Arrow to make character thinner. <br>
-                  Press 1 , 2 or 3 to switch between clothes. <br>
+                  Press 1, 2 or 3 to switch between clothes. <br>
                   Press Right Arrow to make character wider.  <br>
                   Press b to toggle between 4 backgrounds.<br>
-                  Press z or x to switch between hats. <br>
+                  Press z, x, or c to switch between hats. <br>
                   Press Up Arrow to make character taller. <br>
                   Press Down Array to make character smaller. </p>
 
@@ -87,14 +87,23 @@ void main() {\n\
    var heightCtr=0;
    var widthCtr=1.5;
 
-      var backgroundimages = [
+   var backgroundimages = [
       'imgs/pastel.jpg',
       'imgs/rainbow.jpg',
       'imgs/glitter.gif',
       'imgs/ooh.jpg'
    ];
 
-      var backgroundIndex = 0;
+   var backgroundIndex = 0;
+
+   var hatsMain = [
+     hatMat2Top, hatMat1, null
+   ];
+   var hatsBrim =[
+   	 hatMat2Bottom, null, null
+   ];
+
+   var hatsIndex = 0;
 
    //Changing the body structure
    function stretchBody(e){
@@ -141,12 +150,24 @@ void main() {\n\
          bodyMaterial = plaid;
       }
       if(e.keyCode == 90){
+      	/*
+      	hatsIndex++;
+      	if (hatsIndex==hatsMain.length){
+      		hatsIndex=0;
+      	}
+
+         hatMainMaterial = hatsMain[hatsIndex];
+         hatBrimMaterial = hatsBrim[hatsIndex];*/
          hatMainMaterial = hatMat2Top;
          hatBrimMaterial = hatMat2Bottom;
       }
       if(e.keyCode == 88){
          hatMainMaterial = hatMat1;
-         hatBrimMaterial = hatMat1;
+         hatBrimMaterial = null;
+      }
+      if(e.keyCode == 67){
+         hatMainMaterial = null;
+         hatBrimMaterial = null;
       }
       if(e.keyCode == 66){
          backgroundIndex++;
@@ -211,8 +232,8 @@ void main() {\n\
 
    var hatBrimMaterial;
    var hatMainMaterial;
-   hatMainMaterial = hatMat1;
-   hatBrimMaterial = hatMat1;
+   hatMainMaterial = hatMat2Top;
+   hatBrimMaterial = hatMat2Bottom;
    
    //basically have toggle set the materials, if none set it wont show up
 /*
