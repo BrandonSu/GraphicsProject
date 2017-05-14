@@ -80,7 +80,7 @@ void main() {\n\
    var heightHead = 0.05;
 
    var heightCtr=0;
-   var widthCtr=1;
+   var widthCtr=1.5;
 
    //Changing the body structure
    function stretchBody(e){
@@ -106,6 +106,7 @@ void main() {\n\
          widthHead -= .01;
          widthCtr-=1;
          armWidth -= .01;
+         legWidth -= 0.02;
          console.log(widthBody);
       }
       if(e.keyCode == 39 && widthBody <= .5){    //Right Arrow : Grow fatter lol it me
@@ -113,6 +114,7 @@ void main() {\n\
          widthHead += .01;
          widthCtr+=1;
          armWidth += .01;
+         legWidth += 0.02;
          console.log(widthBody);
       }
       if(e.keyCode == 49){
@@ -127,6 +129,8 @@ void main() {\n\
       body.setMaterial(bodyMaterial);
       leftUpperArm.setMaterial(bodyMaterial);
       rightUpperArm.setMaterial(bodyMaterial);
+      leftLowerArm.setMaterial(bodyMaterial);
+      rightLowerArm.setMaterial(bodyMaterial);
    }
 
    //materials and scene   
@@ -228,7 +232,7 @@ void main() {\n\
    gl_start(canvas1,function(time) {
       document.addEventListener('keydown', stretchBody);
       M.identity(m);
-     // M.rotateY(m, Math.PI);
+     // M.rotateY(m, Math.PI/1.7);
       M.rotateY(m, time);
 
    //head
@@ -271,7 +275,7 @@ void main() {\n\
       //lower limbs2
       M.save(m);
          M.scale(m, armWidth, armWidth, armHeight/1.5);
-         M.translate(m, [-8, armHeight-2*armWidth*heightCtr/6, .7+armHeight]);
+         M.translate(m, [-8, -3.5*armHeight-armWidth*heightCtr/6, .7+armHeight]);
          // away/towards body, up/down arm, towards front/back
          //armHeight+heightCtr/1.5+.1
          //height body increases by 2.857 per arm height increase
@@ -281,7 +285,7 @@ void main() {\n\
 
       M.save(m);
          M.scale(m, armWidth, armWidth, armHeight/1.2);
- 		 M.translate(m, [8, armHeight-2*armWidth*heightCtr/6, .7+armHeight]);
+ 		 M.translate(m, [8, -3.5*armHeight-armWidth*heightCtr/6, .7+armHeight]);
          //M.translate(m, [8-widthBody-armWidth, heightBody+armHeight+.1, 0]);
         // M.rotateX(m, Math.PI/2);
          rightLowerArm.setMatrix(m);
@@ -290,7 +294,7 @@ void main() {\n\
       //legs
       M.save(m);
          M.scale(m, legWidth, armHeight, legWidth);
-         M.translate(m, [-1.5+widthBody-legWidth, -2.2, widthCtr*Math.sin(6*time)]);
+         M.translate(m, [-1.5+widthBody-legWidth, -2.2, widthCtr/2.5*Math.sin(6*time)]);
          // asdfasd, up/down, forward/back
          M.rotateX(m, Math.PI/2);
          leftLeg.setMatrix(m);
@@ -298,7 +302,7 @@ void main() {\n\
 
       M.save(m);
          M.scale(m, legWidth, armHeight, legWidth);
-         M.translate(m, [1.5-widthBody+legWidth, -2.2, widthCtr*Math.sin(-6*time)]);
+         M.translate(m, [1.5-widthBody+legWidth, -2.2, widthCtr/2.5*Math.sin(-6*time)]);
          M.rotateX(m, Math.PI/2);
          rightLeg.setMatrix(m);
       M.restore(m);
