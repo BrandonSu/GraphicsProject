@@ -88,25 +88,30 @@ void main() {\n\
          heightBody += .1;
          heightHead+=.0005;
          heightCtr+=1;
-         armHeight += .04;
+         armHeight += .045;
+         console.log(heightBody);
+         console.log(armHeight);
+         //height body increases by 2.857 per arm height increase
       }
       if(e.keyCode == 40 && heightBody >= .2){   //Down Arrow : Shorter
          heightBody -= .1;
          heightHead -=.0005;
          heightCtr-=1;
-         armHeight -= .04;
+         armHeight -= .045;
+         console.log(heightBody);
+         console.log(armHeight);
       }
       if(e.keyCode == 37 && widthBody >= .2){    //Left Arrow : Skinny Down
          widthBody -= .1;
          widthHead -= .01;
-         widthCtr+=1;
+         widthCtr-=1;
          armWidth -= .01;
          console.log(widthBody);
       }
       if(e.keyCode == 39 && widthBody <= .5){    //Right Arrow : Grow fatter lol it me
          widthBody += .1;
          widthHead += .01;
-         widthCtr-=1;
+         widthCtr+=1;
          armWidth += .01;
          console.log(widthBody);
       }
@@ -120,8 +125,8 @@ void main() {\n\
          bodyMaterial = plaid;
       }
       body.setMaterial(bodyMaterial);
-      leftArm.setMaterial(bodyMaterial);
-      rightArm.setMaterial(bodyMaterial);
+      leftUpperArm.setMaterial(bodyMaterial);
+      rightUpperArm.setMaterial(bodyMaterial);
    }
 
    //materials and scene   
@@ -151,20 +156,20 @@ void main() {\n\
    var head2;
    var head3;
    var headMaterial;
-/*
+
    //cube head
    head = new SceneObject();
    head.setVertices(SHAPE.cylinder(4));
    head.setMaterial(skin);
    scene.addObject(head);
-*/
 
+/*
    //sphere head
    head2 = new SceneObject();
    head2.setVertices(SHAPE.sphere(5));
    head2.setMaterial(plaid);
    scene.addObject(head2);
-
+*/
 
    //torso   
    var body, legs;
@@ -178,29 +183,40 @@ void main() {\n\
    scene.addObject(body);
 
    //limbs
-   var leftArm = new SceneObject();
+   var leftUpperArm = new SceneObject();
    var leftLeg = new SceneObject();
-   var rightArm = new SceneObject();
+   var rightUpperArm = new SceneObject();
    var rightLeg = new SceneObject();
+
+   var leftLowerArm = new SceneObject();
+   var rightLowerArm = new SceneObject();
+
    var armWidth = widthBody/10;
-   var armHeight = heightBody/1.4;
+   var armHeight = heightBody/2.2;
    var legWidth = 0.05;
    var lArmMaterial = bodyMaterial;    //arms should have same material as body
    var rArmMaterial = bodyMaterial;
    var lLegMaterial = legs;
    var rLegMaterial = legs;
 
-   leftArm.setVertices(SHAPE.cylinder(15));
-   rightArm.setVertices(SHAPE.cylinder(15));
+   leftUpperArm.setVertices(SHAPE.cylinder(15));
+   rightUpperArm.setVertices(SHAPE.cylinder(15));
+   leftLowerArm.setVertices(SHAPE.cylinder(15));
+   rightLowerArm.setVertices(SHAPE.cylinder(15));
    leftLeg.setVertices(SHAPE.cylinder(15));
    rightLeg.setVertices(SHAPE.cylinder(15));
-   leftArm.setMaterial(lArmMaterial);
-   rightArm.setMaterial(rArmMaterial);
+   leftUpperArm.setMaterial(lArmMaterial);
+   rightUpperArm.setMaterial(rArmMaterial);
+
+   leftLowerArm.setMaterial(lArmMaterial);
+   rightLowerArm.setMaterial(rArmMaterial);
    leftLeg.setMaterial(lLegMaterial);
    rightLeg.setMaterial(rLegMaterial);
    
-   scene.addObject(leftArm);
-   scene.addObject(rightArm);
+   scene.addObject(leftUpperArm);
+   scene.addObject(rightUpperArm);
+   scene.addObject(leftLowerArm);
+   scene.addObject(rightLowerArm);
    scene.addObject(leftLeg);
    scene.addObject(rightLeg);
 
@@ -212,6 +228,7 @@ void main() {\n\
    gl_start(canvas1,function(time) {
       document.addEventListener('keydown', stretchBody);
       M.identity(m);
+   //   M.rotateY(m, Math.PI/1.7);
       M.rotateY(m, time);
 
    //head
@@ -221,7 +238,7 @@ void main() {\n\
          M.rotateZ(m, .75*Math.PI);
          M.translate(m, [0,0,-2.7]);
          M.translate(m, [0,0,-1.9*heightCtr]);
-         head2.setMatrix(m);
+         head.setMatrix(m);
       M.restore(m);
 
       //torso
@@ -232,21 +249,43 @@ void main() {\n\
          body.setMatrix(m);
       M.restore(m);
 
-      //limbs
+      //upper limbs
       M.save(m);
          M.scale(m, armWidth, armHeight, armWidth);
-         M.translate(m, [-8+widthBody+armWidth, heightBody+armHeight+.1, 0]);
+         M.translate(m, [-8+widthBody+armWidth, armHeight+.6, 0]);
+         //depth in body, up/down, forwards/backwards
          M.rotateX(m, Math.PI/2);
-         leftArm.setMatrix(m);
+         leftUpperArm.setMatrix(m);
       M.restore(m);
 
       M.save(m);
          M.scale(m, armWidth, armHeight, armWidth);
-         M.translate(m, [8-widthBody-armWidth, heightBody+armHeight+.1, 0]);
+         M.translate(m, [8-widthBody-armWidth, armHeight+.6, 0]);
+        // M.translate(m, [8-widthBody-armWidth, heightBody+armHeight+.6, 0]);
          M.rotateX(m, Math.PI/2);
-         rightArm.setMatrix(m);
+         rightUpperArm.setMatrix(m);
       M.restore(m);
 
+      //lower limbs2
+      M.save(m);
+         M.scale(m, armWidth, armWidth, armHeight/1.5);
+         M.translate(m, [-8, armHeight-2*armWidth*heightCtr/6, .7+armHeight]);
+         // away/towards body, up/down arm, towards front/back
+         //armHeight+heightCtr/1.5+.1
+         //height body increases by 2.857 per arm height increase
+         
+         leftLowerArm.setMatrix(m);
+      M.restore(m);
+
+      M.save(m);
+         M.scale(m, armWidth, armWidth, armHeight/1.2);
+ 		 M.translate(m, [8, armHeight-2*armWidth*heightCtr/6, .7+armHeight]);
+         //M.translate(m, [8-widthBody-armWidth, heightBody+armHeight+.1, 0]);
+        // M.rotateX(m, Math.PI/2);
+         rightLowerArm.setMatrix(m);
+      M.restore(m);
+
+      //legs
       M.save(m);
          M.scale(m, legWidth, armHeight, legWidth);
          M.translate(m, [-1.5+widthBody-legWidth, -2.2, 0]);
