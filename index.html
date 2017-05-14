@@ -23,6 +23,7 @@
                   Press Right Arrow to make character wider.  <br>
                   Press Up Arrow to make character taller. <br>
                   Press Down Array to make character smaller. </p>
+                  <embed src="nyan.mp3" autostart = "true">
    </div>
 </center>
 </body>
@@ -126,6 +127,17 @@ void main() {\n\
       if(e.keyCode == 51){
          bodyMaterial = plaid;
       }
+      if(e.keyCode == 90){
+         hatMainMaterial = hatMat2Top;
+         hatBrimMaterial = hatMat2Bottom;
+      }
+      if(e.keyCode == 88){
+         hatMainMaterial = hatMat1;
+         hatBrimMaterial = hatMat1;
+      }
+
+
+
       body.setMaterial(bodyMaterial);
       leftUpperArm.setMaterial(bodyMaterial);
       rightUpperArm.setMaterial(bodyMaterial);
@@ -153,6 +165,15 @@ void main() {\n\
    var skin = new Material(vs, fs2);
    skin.setTexture('imgs/head.jpg');
 
+   var hatMat1 = new Material(vs, fs2);
+   hatMat1.setTexture('imgs/fur.png');
+
+   var hatMat2Top = new Material(vs, fs2);
+   hatMat2Top.setTexture('imgs/tophat2.jpg');
+
+   var hatMat2Bottom = new Material(vs, fs2);
+   hatMat2Bottom.setTexture('imgs/tophat.jpg');
+
    var scene = new Scene();
 
    //initialize body parts
@@ -161,13 +182,43 @@ void main() {\n\
    var head3;
    var headMaterial;
 
+   var hatFur;
+   var hatFurBrim;
+   var hatMain;
+   var hatBrim;
+
+   var hatBrimMaterial;
+   var hatMainMaterial;
+   
+   //basically have toggle set the materials, if none set it wont show up
+/*
+   //make russian fur hat 
+   hatFur = new SceneObject();
+   hatFur.setVertices(SHAPE.cylinder(15));
+   hatFur.setMaterial(hatMat1);
+//   scene.addObject(hatFur);
+
+*/
+
+// make a tophat?
+   hatMain = new SceneObject();
+   hatMain.setVertices(SHAPE.cylinder(8));
+   hatMain.setMaterial(hatMat2Top);
+   scene.addObject(hatMain);
+
+   hatBrim = new SceneObject();
+   hatBrim.setVertices(SHAPE.cylinder(15));
+   hatBrim.setMaterial(hatMat2Bottom);
+   scene.addObject(hatBrim);
+
+
    //cube head
    head = new SceneObject();
    head.setVertices(SHAPE.cylinder(4));
    head.setMaterial(skin);
    scene.addObject(head);
 
-/*
+/* 
    //sphere head
    head2 = new SceneObject();
    head2.setVertices(SHAPE.sphere(5));
@@ -232,8 +283,49 @@ void main() {\n\
    gl_start(canvas1,function(time) {
       document.addEventListener('keydown', stretchBody);
       M.identity(m);
-     // M.rotateY(m, Math.PI/1.7);
+      M.rotateY(m, Math.PI);
       M.rotateY(m, time);
+/*
+   //hatFur
+      M.save(m);
+         M.scale(m, widthHead, heightHead, widthHead*1.2);
+         M.rotateX(m, .5*Math.PI);
+         M.rotateZ(m, .75*Math.PI);
+         M.translate(m, [0,0,-3.7-heightHead]);
+         M.translate(m, [0,0,-1.9*heightCtr]);
+         M.translate(m, [.3*Math.sin(8*time),.3*Math.sin(8*time),0]);
+         //diagonal?, also diagonal
+         hatFur.setMatrix(m);
+       // hatMain.setMatrix(m);
+      M.restore(m);
+*/
+
+    //top hat
+      M.save(m);
+         M.scale(m, widthHead, heightHead, widthHead);
+         M.rotateX(m, .5*Math.PI);
+         M.rotateZ(m, .75*Math.PI);
+         M.translate(m, [0,0,-4.7-heightHead]);
+         M.translate(m, [0,0,-1.9*heightCtr]);
+         M.translate(m, [.3*Math.sin(8*time),.3*Math.sin(8*time),0]);
+         //diagonal?, also diagonal
+         hatMain.setMatrix(m);
+      
+      M.restore(m);
+    //top hat brim
+       M.save(m);
+         M.scale(m, widthHead*1.5, .01, widthHead);
+         M.rotateX(m, .5*Math.PI);
+         M.rotateZ(m, .75*Math.PI);
+         M.translate(m, [0,0,-18.7-heightHead]);
+         M.translate(m, [0,0,-9.85*heightCtr]);
+         M.translate(m, [.3*Math.sin(8*time),.3*Math.sin(8*time),0]);
+         //diagonal?, also diagonal
+         hatBrim.setMatrix(m);
+      
+      M.restore(m);
+
+
 
    //head
       M.save(m);
