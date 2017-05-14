@@ -80,7 +80,7 @@ void main() {\n\
    var heightHead = 0.05;
 
    var heightCtr=0;
-   var widthCtr=0;
+   var widthCtr=1;
 
    //Changing the body structure
    function stretchBody(e){
@@ -228,7 +228,7 @@ void main() {\n\
    gl_start(canvas1,function(time) {
       document.addEventListener('keydown', stretchBody);
       M.identity(m);
-   //   M.rotateY(m, Math.PI/1.7);
+     // M.rotateY(m, Math.PI);
       M.rotateY(m, time);
 
    //head
@@ -238,6 +238,8 @@ void main() {\n\
          M.rotateZ(m, .75*Math.PI);
          M.translate(m, [0,0,-2.7]);
          M.translate(m, [0,0,-1.9*heightCtr]);
+         M.translate(m, [.3*Math.sin(8*time),.3*Math.sin(8*time),0]);
+         //diagonal?, also diagonal
          head.setMatrix(m);
       M.restore(m);
 
@@ -288,14 +290,15 @@ void main() {\n\
       //legs
       M.save(m);
          M.scale(m, legWidth, armHeight, legWidth);
-         M.translate(m, [-1.5+widthBody-legWidth, -2.2, 0]);
+         M.translate(m, [-1.5+widthBody-legWidth, -2.2, widthCtr*Math.sin(6*time)]);
+         // asdfasd, up/down, forward/back
          M.rotateX(m, Math.PI/2);
          leftLeg.setMatrix(m);
       M.restore(m);
 
       M.save(m);
          M.scale(m, legWidth, armHeight, legWidth);
-         M.translate(m, [1.5-widthBody+legWidth, -2.2, 0]);
+         M.translate(m, [1.5-widthBody+legWidth, -2.2, widthCtr*Math.sin(-6*time)]);
          M.rotateX(m, Math.PI/2);
          rightLeg.setMatrix(m);
       M.restore(m);
